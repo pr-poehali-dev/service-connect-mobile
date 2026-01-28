@@ -4,9 +4,19 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import BookingModal from '@/components/BookingModal';
+import NotificationsPanel from '@/components/NotificationsPanel';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<any>(null);
+
+  const handleServiceClick = (service: any) => {
+    setSelectedService(service);
+    setBookingModalOpen(true);
+  };
 
   const activeOrders = [
     {
@@ -52,8 +62,14 @@ const Index = () => {
             <h1 className="text-2xl font-bold text-white">ServiceConnect</h1>
             <p className="text-white/80 text-sm">Добро пожаловать!</p>
           </div>
-          <button className="glass-effect p-3 rounded-2xl">
+          <button 
+            className="glass-effect p-3 rounded-2xl relative"
+            onClick={() => setNotificationsOpen(true)}
+          >
             <Icon name="Bell" size={20} className="text-white" />
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent rounded-full text-xs font-bold flex items-center justify-center text-white animate-scale-in">
+              2
+            </span>
           </button>
         </div>
 
@@ -136,7 +152,12 @@ const Index = () => {
             <h2 className="text-xl font-bold mb-4">Наши услуги</h2>
             <div className="grid grid-cols-2 gap-3">
               {services.map((service, idx) => (
-                <Card key={idx} className="p-4 hover:scale-105 transition-transform cursor-pointer animate-scale-in" style={{animationDelay: `${idx * 50}ms`}}>
+                <Card 
+                  key={idx} 
+                  className="p-4 hover:scale-105 transition-transform cursor-pointer animate-scale-in" 
+                  style={{animationDelay: `${idx * 50}ms`}}
+                  onClick={() => handleServiceClick(service)}
+                >
                   <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center mb-3">
                     <Icon name={service.icon as any} size={24} className="text-white" />
                   </div>
@@ -192,7 +213,11 @@ const Index = () => {
                     </span>
                   </div>
                 </div>
-                <Button size="sm" className="gradient-purple">
+                <Button 
+                  size="sm" 
+                  className="gradient-purple"
+                  onClick={() => handleServiceClick(service)}
+                >
                   <Icon name="Plus" size={16} />
                 </Button>
               </Card>
@@ -264,6 +289,17 @@ const Index = () => {
           </button>
         </div>
       </nav>
+
+      <BookingModal 
+        open={bookingModalOpen} 
+        onOpenChange={setBookingModalOpen}
+        selectedService={selectedService}
+      />
+
+      <NotificationsPanel 
+        open={notificationsOpen}
+        onOpenChange={setNotificationsOpen}
+      />
     </div>
   );
 };
